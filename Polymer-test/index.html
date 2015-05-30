@@ -7,8 +7,12 @@
 
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
         <link rel="import" href="proto-element.html">
+        <link rel="import" href="line-plot.html">
         <link rel="import" href="bower_components/paper-button/paper-button.html">
         <link href="css/materialize.css" rel="stylesheet" />
+
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+
         <style is="custom-style">
                 paper-button.ripple paper-ripple {
                   color: var(--paper-pink-a200);
@@ -17,6 +21,8 @@
   </head>
   <body>
     <proto-element></proto-element>
+    <br>
+    <line-plot></line-plot>
     <paper-button raised>button</paper-button>
     <paper-button raised>button2</paper-button>
   </body>
