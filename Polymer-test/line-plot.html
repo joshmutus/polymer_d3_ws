@@ -3,9 +3,43 @@
 
 <dom-module id="line-plot">
   <template>
-    <!-- bind to the "owner" property -->
-    This is <b>{{owner}}</b>'s name-tag element.
+        <style>
+    <div>CSS GOES HERE</div>
+    body {
+      position: relative;
+      width: 960px;
+    }
+
+    rect {
+      fill: #ddd;
+    }
+    body {
+        font: 15px sans-serif;
+    }
+    .grid .tick {
+        stroke: lightgrey;
+        opacity: 0.7;
+    }
+    .grid path {
+        stroke-width: 0;
+    }
+    .axis path, .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+    .x.axis path {
+        display: none;
+    }
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+  </style>
       <div id="area1"></div>
+
   </template>
 </dom-module>
 
