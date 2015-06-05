@@ -1,7 +1,7 @@
 # polymer_d3_ws
 Trying to get polymer to work with d3 and websockets
 
-To run this demo you need to run two things
+To run this (IN PROGRESS) demo you need to run two things
 
 ```
 $ python -m SimpleHTTPServer 8080
