@@ -53,9 +53,10 @@
                 var label = {x :"Independent", y : "Dependent"};
                 var arr_len = {indep_len: 0, dep_len: 0};
                 var plot_type = 1;
-
-            var margin = {top: 20, right: 20, bottom: 50, left: 40},
-            width = 960 - margin.left - margin.right,
+            tot_width = Number(getComputedStyle(area1).width.split('p')[0]) //this is totally ridiculous, I know
+            console.log(tot_width)
+            var margin = {top: 50, right: 50, bottom: 50, left: 40},
+            width = tot_width - margin.left - margin.right,
             height = 500 - margin.top - margin.bottom;
 
             var xScale = d3.scale.linear()

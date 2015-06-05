@@ -1,0 +1,32 @@
+
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<polymer-element>
+  <template>
+      <paper-button raised on-click="simpleClick">
+           <content></content>
+      </paper-button>
+
+  </template>
+
+  <script>
+    Polymer({
+      is:"socket-button",
+      counter: 0,
+      elem_sock: {type: Object}, //global variable for the socket connection
+      ready: function(){
+        if(! ("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
+        this.elem_sock = new WebSocket("ws://localhost:8076");
+        var socket = this.elem_sock; //for some reason I have to do this.
+
+        // open the socket
+        socket.onopen = function(event) {
+        socket.send('test');
+        }
+        },
+
+        simpleClick: function() {
+            this.elem_sock.send(this.innerText);
+        }
+    });
+  </script>
+</polymer-element>

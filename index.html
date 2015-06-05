@@ -9,6 +9,7 @@
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
         <link rel="import" href="proto-element.html">
         <link rel="import" href="line-plot.html">
+        <link rel="import" href="socket-button.html">
         <link rel="import" href="bower_components/paper-button/paper-button.html">
         <link href="css/materialize.css" rel="stylesheet" />
 
@@ -16,10 +17,12 @@
 
   </head>
   <body>
+    <div id="foo">asdasdads</div>
     <proto-element></proto-element>
     <br>
     <paper-button raised>button</paper-button>
     <paper-button raised>button2</paper-button>
+    <socket-button id = "sb">Socket button</socket-button>
     <line-plot></line-plot>
 
   </body>
