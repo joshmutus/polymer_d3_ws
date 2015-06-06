@@ -1,0 +1,24 @@
+<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="dir_item.html">
+<dom-module id="dir-list">
+  <template>
+      <paper-menu>
+          <template is="dom-repeat" id="menu" items="{{dirs}}">
+          <paper-item>{{item.jim}}</paper-item>
+          </template>
+      </paper-menu>
+  </template>
+
+  <script>
+    Polymer({
+      is:"dir-list",
+      ready: function(){
+        this.dirs = [
+            {jim: "foo",bob:"bar"}
+        ];
+        console.log("dir-list ready");
+      }
+    });
+  </script>
+</dom-module>
