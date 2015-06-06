@@ -13,12 +13,16 @@ from twisted.internet.protocol   import Factory, Protocol
 from twisted.python              import log
 
 from txws import WebSocketFactory # pip install txws
+import json
 
 class EchoUpper(Protocol):
     """Echo uppercased."""
     def dataReceived(self, data):
         log.msg("Got %r" % (data,))
-        self.transport.write(data.upper())
+        if data == "get_dirs":
+            self.transport.write(json.dumps(["remoteDir1", "remoteDir2"]))
+        else:
+            self.transport.write(data.upper())
 
 application = Application("ws-streamer")
 

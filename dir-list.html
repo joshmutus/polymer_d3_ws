@@ -5,7 +5,7 @@
   <template>
       <paper-menu>
           <template is="dom-repeat" id="menu" items="{{dirs}}">
-          <paper-item>{{item.jim}}</paper-item>
+          <paper-item on-click="clicky" id={{item.bob}}>{{item.jim}}</paper-item>
           </template>
       </paper-menu>
   </template>
@@ -18,6 +18,10 @@
             {jim: "foo",bob:"bar"}
         ];
         console.log("dir-list ready");
+      },
+      clicky: function(){
+        console.log("registered click on menu item")
+        console.log(this.innerText)
       }
     });
   </script>

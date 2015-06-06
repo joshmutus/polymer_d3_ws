@@ -18,6 +18,7 @@
 
         <script src="http://d3js.org/d3.v3.min.js"></script>
 
+
   </head>
   <body>
     <div id="foo">asdasdads</div>
@@ -28,6 +29,21 @@
     <socket-button id = "sb">Socket button</socket-button>
     <dir-list id = "listy"></dir-list>
     <line-plot></line-plot>
+    <script>
+        var dirSocket; //open a socket just for populating the directory list
+        if(! ("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
+        dirSocket  = new WebSocket("ws://localhost:8076");
 
+        dirSocket.onopen = function(event) {
+            dirSocket.send('get_dirs');
+        }
+        dirSocket.onmessage = function(e) {
+        //populate the directory list with content from web socket server
+            newDir = JSON.parse(e.data);
+            for (var j in newDir){
+                listy.push('dirs',{jim:newDir[j],bob:"bar3"});
+            }
+        }
+    </script>
   </body>
 </html>
