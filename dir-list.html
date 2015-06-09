@@ -1,11 +1,12 @@
 <link rel="import" href="bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="bower_components/paper-item/paper-item.html">
-<link rel="import" href="dir_item.html">
+<link rel="import" href="dir-item.html">
 <dom-module id="dir-list">
   <template>
       <paper-menu>
           <template is="dom-repeat" id="menu" items="{{dirs}}">
-          <paper-item on-click="clicky" id={{item.bob}}>{{item.jim}}</paper-item>
+          <!--<paper-item><span on-click="clicky" id={{item.bob}}>{{item.jim}}</span></paper-item>-->
+          <dir-item prop = {{}}><paper-item>{{item.jim}}</dir-item></paper-item>
           </template>
       </paper-menu>
   </template>
@@ -18,11 +19,15 @@
             {jim: "foo",bob:"bar"}
         ];
         console.log("dir-list ready");
+        this.coava =  function(){
+            console.log("event in dir-list fired");
+        }
       },
       clicky: function(){
-        console.log("registered click on menu item")
-        console.log(this.innerText)
+        console.log(this.innerText);
       }
+
+
     });
   </script>
 </dom-module>

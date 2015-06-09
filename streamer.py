@@ -20,7 +20,7 @@ class EchoUpper(Protocol):
     def dataReceived(self, data):
         log.msg("Got %r" % (data,))
         if data == "get_dirs":
-            self.transport.write(json.dumps(["remoteDir1", "remoteDir2"]))
+            self.transport.write(json.dumps(["remoteDir 1", "remoteDir 2","remoteDir 3"]))
         else:
             self.transport.write(data.upper())
 

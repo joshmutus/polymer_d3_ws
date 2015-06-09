@@ -1,8 +1,8 @@
 
 <link rel="import" href="bower_components/paper-item/paper-item.html">
-<polymer-element>
+<dom-module>
   <template>
-      <span on-click="simpleClick">{{dir_name}}</span>
+      <span on-click="clicky"><content></content></span>
   </template>
 
   <script>
@@ -11,21 +11,20 @@
       properties: {
         dir_name: String
       },
-        elem_sock: {type: Object}, //global variable for the socket connection
-        ready: function(){
-        if(! ("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
-        this.elem_sock = new WebSocket("ws://localhost:8076");
-        var socket = this.elem_sock; //for some reason I have to do this.
+    prop: {
+        type: Number,
+        notify: true
+    },
+    ready: function(){
+        prop = 5;
+        console.log(prop)
 
-        // open the socket
-        socket.onopen = function(event) {
-        socket.send('test');
-        }
-        },
-
-        simpleClick: function() {
-            this.elem_sock.send(this.dir_name);
-        }
+    },
+    clicky: function() {
+        console.log(this.innerText);
+        prop++;
+        console.log(prop);
+    }
     });
   </script>
-</polymer-element>
+</dom-module>

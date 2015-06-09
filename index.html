@@ -28,7 +28,10 @@
     <paper-button raised>button2</paper-button>
     <socket-button id = "sb">Socket button</socket-button>
     <dir-list id = "listy"></dir-list>
+    <notifier-dom prop="6">note</notifier-dom>
+    <hearer-element></hearer-element>
     <line-plot></line-plot>
+
     <script>
         var dirSocket; //open a socket just for populating the directory list
         if(! ("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
