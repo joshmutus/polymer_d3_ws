@@ -23,6 +23,7 @@
     clicky: function() {
         console.log(this.innerText);
         prop++;
+        this.fire("dir-item-clicked","message");
         console.log(prop);
     }
     });

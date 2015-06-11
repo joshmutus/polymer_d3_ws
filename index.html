@@ -27,26 +27,50 @@
     <paper-button raised>button</paper-button>
     <paper-button raised>button2</paper-button>
     <socket-button id = "sb">Socket button</socket-button>
-    <dir-list id = "listy"></dir-list>
+    <!--<dir-list id = "listy"></dir-list>-->
+    <grapher-scaffold></grapher-scaffold>
     <notifier-dom prop="6">note</notifier-dom>
     <hearer-element></hearer-element>
     <line-plot></line-plot>
 
     <script>
-        var dirSocket; //open a socket just for populating the directory list
-        if(! ("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
-        dirSocket  = new WebSocket("ws://localhost:8076");
 
-        dirSocket.onopen = function(event) {
-            dirSocket.send('get_dirs');
-        }
-        dirSocket.onmessage = function(e) {
-        //populate the directory list with content from web socket server
-            newDir = JSON.parse(e.data);
-            for (var j in newDir){
-                listy.push('dirs',{jim:newDir[j],bob:"bar3"});
-            }
-        }
     </script>
   </body>
 </html>
+
+<dom-module id="grapher-scaffold">
+    <template>
+        <dir-list id="listy" on-dir-item-clicked="dirHandler"></dir-list>
+    </template>
+
+    <script>
+        Polymer({
+            is: "grapher-scaffold",
+            dirSocket: {type: Object},
+            dataSocket: {type: Object},
+            ready: function(){
+                if (!("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
+
+                this.dirSocket = new WebSocket("ws://localhost:8076");
+                socket1 = this.dirSocket;
+
+                this.dataSocket = new WebSocket("ws://localhost:8076");
+                this.dirSocket.onopen = function (event) {
+                    socket1.send('get_dirs');
+                }
+                socket1.onmessage = function (e) {
+                    //populate the directory list with content from web socket server
+                    newDir = JSON.parse(e.data);
+                    for (var j in newDir) {
+                        listy.push('dirs', {jim: newDir[j], bob: "bar3"});
+                    }
+                }
+            },
+            dirHandler: function(msg) {
+                this.dirSocket.send(msg.detail);
+            }
+        });
+    </script>
+
+</dom-module>
