@@ -11,20 +11,9 @@
       properties: {
         dir_name: String
       },
-    prop: {
-        type: Number,
-        notify: true
-    },
-    ready: function(){
-        prop = 5;
-        console.log(prop)
-
-    },
     clicky: function() {
         console.log(this.innerText);
-        prop++;
-        this.fire("dir-item-clicked","message");
-        console.log(prop);
+        this.fire("dir-item-clicked",this.innerText);
     }
     });
   </script>

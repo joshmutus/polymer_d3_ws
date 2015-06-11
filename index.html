@@ -49,7 +49,7 @@
             is: "grapher-scaffold",
             dirSocket: {type: Object},
             dataSocket: {type: Object},
-            ready: function(){
+            ready: function () {
                 if (!("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
 
                 this.dirSocket = new WebSocket("ws://localhost:8076");
@@ -59,18 +59,36 @@
                 this.dirSocket.onopen = function (event) {
                     socket1.send('get_dirs');
                 }
+                console.log("in ready:")
                 socket1.onmessage = function (e) {
                     //populate the directory list with content from web socket server
+
                     newDir = JSON.parse(e.data);
                     for (var j in newDir) {
                         listy.push('dirs', {jim: newDir[j], bob: "bar3"});
                     }
                 }
             },
-            dirHandler: function(msg) {
+            dirHandler: function (msg) {
                 this.dirSocket.send(msg.detail);
-            }
+                this.dirSocket.onmessage = function (e) {
+                    //populate the directory list with content from web socket server
+                    console.log(e.data)
+                    newDir = JSON.parse(e.data);
+                    for (var j in newDir) {
+                        listy.push('dirs', {jim: newDir[j], bob: "bar3"});
+                    }
+                }
+            },
+//            listeners: {
+//                'dirSocket.onmessage': 'dirMsg'
+//            },
+//
+//            dirMsg: function(e){
+//                console.log("got a message")
+//            }
+
+
         });
     </script>
-
 </dom-module>

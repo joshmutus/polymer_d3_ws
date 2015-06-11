@@ -21,6 +21,8 @@ class EchoUpper(Protocol):
         log.msg("Got %r" % (data,))
         if data == "get_dirs":
             self.transport.write(json.dumps(["remoteDir 1", "remoteDir 2","remoteDir 3"]))
+        elif data =="remoteDir 1":
+            self.transport.write(json.dumps(["newDir 1", "newDir 2","newDir 3"]))
         else:
             self.transport.write(data.upper())
 
