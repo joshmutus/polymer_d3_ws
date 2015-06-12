@@ -7,7 +7,6 @@
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
 
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-        <link rel="import" href="proto-element.html">
         <link rel="import" href="line-plot.html">
         <link rel="import" href="socket-button.html">
         <link rel="import" href="dir-list.html">
@@ -17,21 +16,14 @@
         <link href="css/materialize.css" rel="stylesheet" />
 
         <script src="http://d3js.org/d3.v3.min.js"></script>
-
-
   </head>
   <body>
-    <div id="foo">asdasdads</div>
-    <proto-element></proto-element>
-    <br>
     <paper-button raised>button</paper-button>
     <paper-button raised>button2</paper-button>
     <socket-button id = "sb">Socket button</socket-button>
     <!--<dir-list id = "listy"></dir-list>-->
-    <grapher-scaffold></grapher-scaffold>
-    <notifier-dom prop="6">note</notifier-dom>
-    <hearer-element></hearer-element>
-    <line-plot></line-plot>
+    <grapher-scaffold id="gs"></grapher-scaffold>
+
 
     <script>
 
@@ -42,51 +34,67 @@
 <dom-module id="grapher-scaffold">
     <template>
         <dir-list id="listy" on-dir-item-clicked="dirHandler"></dir-list>
+        <line-plot lineData = "{{the_data}}" ></line-plot>
     </template>
 
     <script>
+        populateList = function(data){
+            newDir = JSON.parse(data);
+            for (var j in newDir) {
+                listy.push('dirs', {jim: newDir[j], bob: "bar3"});
+            }
+        };
+        get_stuff = function(stuff, container){
+            container = stuff;
+        }
         Polymer({
             is: "grapher-scaffold",
             dirSocket: {type: Object},
             dataSocket: {type: Object},
+            the_data: {
+                value: [[0,0],[1,1]],
+                type: Array
+            },
             ready: function () {
+                var self = this; //I don't understand scope in javascript
                 if (!("WebSocket" in window)) WebSocket = MozWebSocket; // firefox
-
+                //open different sockets to handle different components
+                //TODO abstract this initialization into a function
                 this.dirSocket = new WebSocket("ws://localhost:8076");
-                socket1 = this.dirSocket;
-
                 this.dataSocket = new WebSocket("ws://localhost:8076");
-                this.dirSocket.onopen = function (event) {
-                    socket1.send('get_dirs');
+                socketDir = this.dirSocket;//I have to do this for some reason
+                socketData = this.dataSocket;
+                this.the_data = [[0,0],[1,1]];
+                //initialize components
+                socketDir.onopen = function (event) {
+                    socketDir.send('get_dirs');
                 }
-                console.log("in ready:")
-                socket1.onmessage = function (e) {
-                    //populate the directory list with content from web socket server
-
-                    newDir = JSON.parse(e.data);
-                    for (var j in newDir) {
-                        listy.push('dirs', {jim: newDir[j], bob: "bar3"});
+                socketDir.onmessage = function (e) {
+                    populateList(e.data);
+                }
+                socketData.onopen = function(event){
+                    socketData.send('get_data');
+                }
+                console.log("gs ready: " + String(this.the_data));
+                socketData.onmessage = function(e){
+                    console.log("got data");
+                    console.log(e.data);
+                    var newArr = JSON.parse(e.data);
+                    for (var k = 0; k<newArr.length; k++ ){
+                        self.the_data.push(newArr[k]);
                     }
+                    //self.the_data.push(JSON.parse(e.data));
+                    console.log(self.the_data);
                 }
+
             },
             dirHandler: function (msg) {
                 this.dirSocket.send(msg.detail);
-                this.dirSocket.onmessage = function (e) {
+                this.dirSocket.onmessage = function (e) {//this socket message listener is non-blocking for some reason
                     //populate the directory list with content from web socket server
-                    console.log(e.data)
-                    newDir = JSON.parse(e.data);
-                    for (var j in newDir) {
-                        listy.push('dirs', {jim: newDir[j], bob: "bar3"});
-                    }
+                    populateList(e.data);
                 }
             },
-//            listeners: {
-//                'dirSocket.onmessage': 'dirMsg'
-//            },
-//
-//            dirMsg: function(e){
-//                console.log("got a message")
-//            }
 
 
         });
