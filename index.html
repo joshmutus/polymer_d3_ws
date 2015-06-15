@@ -35,7 +35,7 @@
     <link rel="import" href="line-plot.html">
     <template>
         <dir-list id="listy" on-dir-item-clicked="dirHandler"></dir-list>
-        <line-plot linedata="{{the_data}}"></line-plot>
+        <line-plot linedata="{{the_data}}" id="line_plot"></line-plot>
     </template>
 
     <script>
@@ -85,6 +85,7 @@
                     }
                     self.the_data = newArr;
                     console.log(self.the_data);
+                    line_plot.pushUpdate();
                 }
 
             },
