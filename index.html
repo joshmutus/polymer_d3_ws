@@ -49,7 +49,6 @@
             is: "grapher-scaffold",
             dirSocket: {type: Object},
             dataSocket: {type: Object},
-            dataSocket: {type: Object},
             the_data: {
                 type: Array
             },
@@ -63,8 +62,7 @@
                 this.dataSocket = new WebSocket("ws://localhost:8076");
                 socketDir = this.dirSocket;//I have to do this for some reason
                 socketData = this.dataSocket;
-                //this.the_data = [[0,0],[1,1]];
-                //initialize components
+
                 socketDir.onopen = function (event) {
                     socketDir.send('get_dirs');
                 }

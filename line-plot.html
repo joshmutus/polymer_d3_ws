@@ -36,7 +36,7 @@
         }
         </style>
         <button on-click="checkClick">click to check</button>
-        <span>{{linedata}}</span>
+        <button id = "reset" on-click="reset">reset zoom</button>
         <div id="area1"></div>
     </template>
 <script>
@@ -56,7 +56,7 @@
             updateLinePlot(this.linedata,chartObj);
         },
         ready:  function() {
-            this.linedata = [[0,0],[1,1]];
+            this.linedata = [];
             chartObj = createLinePlot(this.linedata,this.$.area1);
             //this.linedata.push([2,2]);
             console.log("Data in line-plot:ready "+String(this.linedata));
@@ -64,12 +64,16 @@
         },
         pushUpdate: function(){
             updateLinePlot(this.linedata,chartObj);
+        },
+        reset: function(){
+            createLinePlot().reset();
         }
     });
 
-    createLinePlot = function(data,area){
+    createLinePlot = function(data_all,area){
         var plotObject = Object; //this object will contain all the info about a given plot
-        plotObject.data2 = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9], [10, 10], [11, 11], [12, 12], [13, 13], [14, 14], [15, 15], [16, 16], [17, 17], [18, 18], [19, 19], [20, 20], [21, 21], [22, 22], [23, 23], [24, 24], [25, 25], [26, 26], [27, 27], [28, 28], [29, 29], [30, 30], [31, 31], [32, 32], [33, 33], [34, 34], [35, 35], [36, 36], [37, 37], [38, 38], [39, 39], [40, 40], [41, 41], [42, 42], [43, 43], [44, 44], [45, 45], [46, 46], [47, 47], [48, 48], [49, 49], [50, 50], [51, 49], [52, 48], [53, 47], [54, 46], [55, 45], [56, 44], [57, 43], [58, 42], [59, 41], [60, 40], [61, 39], [62, 38], [63, 37], [64, 36], [65, 35], [66, 34], [67, 33], [68, 32], [69, 31], [70, 30], [71, 29], [72, 28], [73, 27], [74, 26], [75, 25], [76, 24], [77, 23], [78, 22], [79, 21], [80, 20], [81, 19], [82, 18], [83, 17], [84, 16], [85, 15], [86, 14], [87, 13], [88, 12], [89, 11], [90, 10], [91, 9], [92, 8], [93, 7], [94, 6], [95, 5], [96, 4], [97, 3], [98, 2], [99, 1]];
+        console.log("data len "+ String(data_all.length));
+        plotObject.numTraces = data_all.length;
         plotObject.plot_extents = {xMin: 0, xMax: 100, yMin:0, yMax:100};
         plotObject.label = {x :"Independent", y : "Dependent"};
         plotObject.arr_len = {indep_len: 0, dep_len: 0};
@@ -163,13 +167,11 @@
             plotObject.svg.select(".x.axis").call(plotObject.xAxis);
             plotObject.svg.select(".y.axis").call(plotObject.yAxis);
             //zooming and panning line plot
-            plotObject.svg.selectAll(".line")
-                    .attr("class", "line")
-                    .attr("d", plotObject.line);
-
-            plotObject.svg.selectAll(".line2")
-                    .attr("class", "line2")
-                    .attr("d", plotObject.line);
+            for (var k = 0 ; k < plotObject.numTraces ; k++) {
+                plotObject.svg.selectAll(".line"+String(k))
+                        .attr("class", "line"+String(k))
+                        .attr("d", plotObject.line);
+            }
             //For zooming and panning 2D plot (http://jsfiddle.net/jgab3103/e05qj4hy/)
             plotObject.rectGroup.selectAll("rect")
                     .attr('class', 'rect')
@@ -189,23 +191,14 @@
         }
 
         function reset() {
+            //TODO fix this reset zoom
             plotObject.svg.call(zoom
                     .x(x.domain([-width / 2, width / 2]))
                     .y(y.domain([-height / 2, height / 2]))
                     .event);
         }
         if (plotObject.plot_type == 1){
-            plotObject.chartBody.append("svg:path")
-                    .datum(data)
-                    .attr("class", "line")
-                    .attr("d", plotObject.line);
-
-            plotObject.chartBody.append("svg:path")
-                    .datum(plotObject.data2)
-                    .attr("stroke","red")
-                    .attr("fill","none")
-                    .attr("class", "line"+String(2))
-                    .attr("d", plotObject.line);
+            updateLinePlot(data_all,plotObject);
         }
         if (plotObject.plot_type == 2){
             pixWidth = width/10
@@ -245,13 +238,17 @@
         }
         return plotObject;
     };
-    updateLinePlot = function(data, plot_obj){
-        plot_obj.chartBody.selectAll(".line").remove();
-        plot_obj.chartBody.append("svg:path")
-                .datum(data)
-                .attr("class", "line")
-                .attr("d", plot_obj.line);
-
+    updateLinePlot = function(data_all, plot_obj){
+        plot_obj.numTraces = data_all.length;
+        for (var k = 0; k< data_all.length; k++ ) {
+            plot_obj.chartBody.append("svg:path")
+                    .datum(data_all[k])
+                    .attr("stroke",color_list[k])
+                    .attr("fill","none")
+                    .attr("class", "line"+String(k))
+                    .attr("d", plot_obj.line);
+        }
     };
+    color_list = ["red","blue","yellow","green","magenta"];
 </script>
 </dom-module>
