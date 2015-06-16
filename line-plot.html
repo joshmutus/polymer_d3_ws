@@ -243,7 +243,7 @@
         for (var k = 0; k< data_all.length; k++ ) {
             plot_obj.chartBody.append("svg:path")
                     .datum(data_all[k])
-                    .attr("stroke",color_list[k])
+                    .attr("stroke",color_list[k%color_list.length])//color list wraps
                     .attr("fill","none")
                     .attr("class", "line"+String(k))
                     .attr("d", plot_obj.line);
