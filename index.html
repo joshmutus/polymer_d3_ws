@@ -40,9 +40,10 @@
 
     <script>
         populateList = function(data){
+            console.log(data);
             newDir = JSON.parse(data);
             for (var j in newDir) {
-                listy.push('dirs', {jim: newDir[j], bob: "bar3"});
+                listy.push('dirs', {entry_name: newDir[j], entry_type: "folder"});
             }
         };
         Polymer({

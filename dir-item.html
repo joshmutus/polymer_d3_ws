@@ -1,20 +1,37 @@
 
 <link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
 <dom-module>
   <template>
-      <span on-click="clicky"><content></content></span>
+      <span on-click="clicky" ><paper-icon-item><iron-icon icon="{{dir_icon}}" item-icon></iron-icon><content></content></paper-icon-item></span>
   </template>
 
   <script>
     Polymer({
-      is:"dir-item",
-      properties: {
-        dir_name: String
-      },
-    clicky: function() {
-        console.log(this.innerText);
-        this.fire("dir-item-clicked",this.innerText);
-    }
+        is:"dir-item",
+        properties: {
+            dir_name: {type: String},
+            prop: {type: String},
+            dir_icon:{
+                type: String,
+                computed: 'assignIcon(prop)'
+                //value: "trending-up"
+            }
+
+        },
+        assignIcon: function(entry_type){
+            if (entry_type == "folder"){
+                return "folder";
+            }
+            if (entry_type == "data"){
+                return "trending-up";
+            }
+        },
+        clicky: function() {
+            console.log(this.innerText);
+            this.fire("dir-item-clicked",this.innerText+this.prop);
+        }
     });
   </script>
 </dom-module>

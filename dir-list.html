@@ -6,7 +6,7 @@
       <paper-menu>
           <template is="dom-repeat" id="menu" items="{{dirs}}">
           <!--<paper-item><span on-click="clicky" id={{item.bob}}>{{item.jim}}</span></paper-item>-->
-          <dir-item prop = {{}}><paper-item>{{item.jim}}</dir-item></paper-item>
+          <dir-item prop = {{item.entry_type}}>{{item.entry_name}}</dir-item>
           </template>
       </paper-menu>
   </template>
@@ -16,7 +16,7 @@
       is:"dir-list",
       ready: function(){
         this.dirs = [
-            {jim: "foo",bob:"bar"}
+            {entry_name: "foo",entry_type:"data"}
         ];
         console.log("dir-list ready");
       },
