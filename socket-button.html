@@ -20,12 +20,15 @@
 
         // open the socket
         socket.onopen = function(event) {
-        socket.send('test');
+          socket.send('hi.nothing');
         }
         },
 
         simpleClick: function() {
-            this.elem_sock.send(this.innerText);
+            this.elem_sock.send('test.nothing');
+            this.elem_sock.onmessage =function(e){
+              console.log(JSON.parse(e.data))
+            }
         }
     });
   </script>

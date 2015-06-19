@@ -35,9 +35,10 @@ def parse_dir(resp):
     return dir_list_parsed
 
 def find_limits(data):
-    x_min, x_max  = data[:,0][0], data[:,0][-1]
-    y_min, y_max = data.min(),data.max
-    return {"x_min":str(x_min),"x_max":str(x_max), "y_min": str(y_min),"y_max": str(y_max)}
+    x_min, x_max = data[:,0][0], data[:,0][-1]
+    y_min, y_max = data.min(),data.max()
+
+    return {"x_min":x_min,"x_max":x_max, "y_min":y_min,"y_max":y_max}
 
 def parse_line_data(data):
     superArr = []
@@ -46,12 +47,16 @@ def parse_line_data(data):
         for row, ent in enumerate(data[:,0]):
             arr.append([data[:,0][row],data[:,col][row]])
         superArr.append([arr])
-    return superArr
+
+    return {"data": superArr}
 
 def parse_axis_labels(variables):
-    x_label = str(dv.variables()[0][0][0])+" ("+ str(dv.variables()[0][0][1])+")"
-    y_label = str(dv.variables()[1][0][0])+" ("+ str(dv.variables()[1][0][1])+")"
-    return {"x_label" : x_label,"y_label" : y_label}
+    x_label = str(variables[0][0][0])+" ("+ str(variables[0][0][1])+")"
+    y_label = str(variables[1][0][0])+" ("+ str(variables[1][0][1])+")"
+    plot_type = len(variables[0])
+    log.msg(type(plot_type))
+
+    return {"x_label" : x_label,"y_label" : y_label, "plot_type" : plot_type}
 
 class DataVaultProtocol(Protocol):
     """Protocol for handling request to the data_vault server"""
@@ -60,6 +65,7 @@ class DataVaultProtocol(Protocol):
         log.msg("Connection made, connected to: ",self.factory.cxn)
         self.cxn = self.factory.cxn
         self.dv = self.cxn.data_vault
+        self.dv.cd('')
 
     @inlineCallbacks
     def dataReceived(self, data):
@@ -82,6 +88,15 @@ class DataVaultProtocol(Protocol):
             log.msg("Got a request for dv get")
         elif parsed[0] == "open":
             log.msg("Got a request for dv open")
+        elif parsed[0] == "test":
+            self.dv.cd('120429')
+            self.dv.open(4)
+            data = yield self.dv.get()
+            vars = yield self.dv.variables()
+            resp = dict(parse_axis_labels(vars).items() + find_limits(data).items() + parse_line_data(data).items())
+            #self.transport.write(json.dumps({'hi':5}))
+            self.transport.write(json.dumps(resp))
+
         else:
             log.msg("Got an unsupported request")
             self.transport.write("I'm sorry, I can't do that")
