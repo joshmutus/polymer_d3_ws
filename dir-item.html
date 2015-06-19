@@ -16,7 +16,6 @@
             dir_icon:{
                 type: String,
                 computed: 'assignIcon(prop)'
-                //value: "trending-up"
             }
 
         },
@@ -30,7 +29,12 @@
         },
         clicky: function() {
             console.log(this.innerText);
-            this.fire("dir-item-clicked",this.innerText+this.prop);
+            if (this.prop == "data"){
+                this.fire("data-item-clicked",this.innerText);
+            }
+            if (this.prop == "folder") {
+                this.fire("folder-item-clicked", this.innerText);
+            }
         }
     });
   </script>

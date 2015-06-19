@@ -34,7 +34,7 @@
 <dom-module id="grapher-scaffold">
     <link rel="import" href="line-plot.html">
     <template>
-        <dir-list id="listy" on-dir-item-clicked="dirHandler"></dir-list>
+        <dir-list id="listy" on-folder-item-clicked="dirHandler" on-data-item-clicked="dataHandler"></dir-list>
         <line-plot linedata="{{the_data}}" id="line_plot"></line-plot>
     </template>
 
@@ -42,10 +42,21 @@
         populateList = function(data){
             console.log(data);
             newDir = JSON.parse(data);
+            console.log("in populate list");
+            console.log(newDir);
             for (var j in newDir) {
-                listy.push('dirs', {entry_name: newDir[j], entry_type: "folder"});
+                listy.push('dirs', {entry_name: newDir[j].name, entry_type: newDir[j].type});
             }
         };
+        refreshData = function(newData){
+            console.log(newData);
+            var dataArr = JSON.parse(newData);
+            var newArr = [];
+            for (var k = 0; k<dataArr.length; k++ ){
+                newArr.push(dataArr[k]);
+            }
+            return newArr;
+        }
         Polymer({
             is: "grapher-scaffold",
             dirSocket: {type: Object},
@@ -71,19 +82,21 @@
                     populateList(e.data);
                 }
                 socketData.onopen = function(event){
-                    socketData.send('get_data');
+                    socketData.send('get_data.nuffin');
                 }
                 console.log("gs ready: " + String(this.the_data));
                 socketData.onmessage = function(e){
                     var newArr = []
                     console.log("got data");
                     console.log(e.data);
-                    var dataArr = JSON.parse(e.data);
-                    for (var k = 0; k<dataArr.length; k++ ){
-                        newArr.push(dataArr[k]);
-                    }
-                    self.the_data = newArr;
-                    console.log(self.the_data);
+                    self.the_data = refreshData(e.data);
+
+//                    var dataArr = JSON.parse(e.data);
+//                    for (var k = 0; k<dataArr.length; k++ ){
+//                        newArr.push(dataArr[k]);
+//                    }
+//                    self.the_data = newArr;
+//                    console.log(self.the_data);
                     line_plot.pushUpdate();
                 }
 
@@ -93,6 +106,12 @@
                 this.dirSocket.onmessage = function (e) {//this socket message listener is non-blocking for some reason
                     //populate the directory list with content from web socket server
                     populateList(e.data);
+                }
+            },
+            dataHandler: function(msg){
+                this.dirSocket.send("load."+msg.detail);
+                this.dirSocket.onmessage = function(e){
+
                 }
             }
 
