@@ -249,6 +249,22 @@
                     .attr("d", plot_obj.line);
         }
     };
+    findLimits = function(data_all){
+        var deps = [];
+        var indeps = [];
+        for (var i in data_all){ //concatnate all the data!
+            deps.concat(data_all[i][1]);
+            indeps.concat(data_all[i][0]);
+            console.log(indeps);
+        }
+
+        return {
+            y_min:Math.min.apply(null,deps),
+            y_max:Math.max.apply(null,deps),
+            x_min:Math.min.apply(null,indeps),
+            x_max:Math.max.apply(null,indeps)
+        }
+    };
     color_list = ["red","blue","yellow","green","magenta"];
 </script>
 </dom-module>

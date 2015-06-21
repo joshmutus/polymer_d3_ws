@@ -34,25 +34,21 @@ def parse_dir(resp):
         dir_list_parsed.append({"name":str(ent),"type":"data"})
     return dir_list_parsed
 
-def find_limits(data):
+def find_limits(data, set):
     x_min, x_max = data[:,0][0], data[:,0][-1]
-    y_min, y_max = data.min(),data.max()
+    y_min, y_max = data[:,set][0],data[:,set][-1]
 
     return {"x_min":x_min,"x_max":x_max, "y_min":y_min,"y_max":y_max}
 
-def parse_line_data(data):
-    superArr = []
-    for col, ent in enumerate(data[0]):
-        arr =[]
-        for row, ent in enumerate(data[:,0]):
-            arr.append([data[:,0][row],data[:,col][row]])
-        superArr.append([arr])
+def parse_line_data(data,set):
+    arr =[]
+    for row, ent in enumerate(data[:,0]):
+        arr.append([data[:,0][row],data[:,set][row]])
+    return {"data": arr}
 
-    return {"data": superArr}
-
-def parse_axis_labels(variables):
+def parse_axis_labels(variables,set):
     x_label = str(variables[0][0][0])+" ("+ str(variables[0][0][1])+")"
-    y_label = str(variables[1][0][0])+" ("+ str(variables[1][0][1])+")"
+    y_label = str(variables[1][set][0])+" ("+ str(variables[1][set][1])+")"
     plot_type = len(variables[0])
     log.msg(type(plot_type))
 
@@ -89,14 +85,13 @@ class DataVaultProtocol(Protocol):
         elif parsed[0] == "open":
             log.msg("Got a request for dv open")
         elif parsed[0] == "test":
+            set = int(parsed[1])
             self.dv.cd('120429')
             self.dv.open(4)
             data = yield self.dv.get()
             vars = yield self.dv.variables()
-            resp = dict(parse_axis_labels(vars).items() + find_limits(data).items() + parse_line_data(data).items())
-            #self.transport.write(json.dumps({'hi':5}))
+            resp = dict(parse_axis_labels(vars,set).items() + find_limits(data,set).items() + parse_line_data(data,set).items())
             self.transport.write(json.dumps(resp))
-
         else:
             log.msg("Got an unsupported request")
             self.transport.write("I'm sorry, I can't do that")
